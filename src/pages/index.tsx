@@ -1,12 +1,24 @@
-import { Link } from 'wouter';
+import { useEffect } from "react";
+import { Link } from "wouter";
+import { databases } from "@/lib/appwrite";
 
-import Layout from '@/components/Layout';
-import Container from '@/components/Container';
-import EventCard from '@/components/EventCard';
+import Layout from "@/components/Layout";
+import Container from "@/components/Container";
+import EventCard from "@/components/EventCard";
 
-import events from '@/data/events.json';
+import events from "@/data/events.json";
 
 function Home() {
+  useEffect(() => {
+    (async function run() {
+      const results = await databases.listDocuments(
+        import.meta.env.VITE_APPWRITE_EVENTS_DATABASE_ID,
+        import.meta.env.VITE_APPWRITE_EVENTS_COLLECTION_ID,
+      );
+      console.log("results", results);
+    })();
+  }, []);
+
   return (
     <Layout>
       {Array.isArray(events) && events.length > 0 && (
@@ -23,7 +35,7 @@ function Home() {
               </Link>
             </p>
           </Container>
-          
+
           <Container>
             <div className="grid gap-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {events.map((event) => {
@@ -33,17 +45,17 @@ function Home() {
                       <EventCard
                         date={event.date}
                         image={{
-                          alt: '',
+                          alt: "",
                           height: event.imageHeight,
                           url: event.imageUrl,
-                          width: event.imageWidth
+                          width: event.imageWidth,
                         }}
                         location={event.location}
                         name={event.name}
                       />
                     </a>
                   </Link>
-                )
+                );
               })}
             </div>
           </Container>
@@ -56,15 +68,13 @@ function Home() {
           </p>
           <p className="w-100 text-center">
             <Link href="/events/new">
-              <a>
-                Add an Event
-              </a>
+              <a>Add an Event</a>
             </Link>
           </p>
         </Container>
       )}
     </Layout>
-  )
+  );
 }
 
 export default Home;
