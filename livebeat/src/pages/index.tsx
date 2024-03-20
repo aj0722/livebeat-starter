@@ -1,4 +1,6 @@
-import { Link } from 'wouter';
+import { useEffect } from "react";
+import { Link } from "wouter";
+import { databases } from "@/lib/appwrite";
 
 import Layout from '@/components/Layout';
 import Container from '@/components/Container';
@@ -7,6 +9,17 @@ import EventCard from '@/components/EventCard';
 import events from '@/data/events.json';
 
 function Home() {
+
+  useEffect(() => {
+    (async function run() {
+      const results = await databases.listDocuments(
+        import.meta.env.VITE_APPWRITE_EVENTS_DATABASE_ID,
+        import.meta.env.VITE_APPWRITE_EVENTS_COLLECTION_ID,
+      );
+      console.log("results", results);
+    })();
+  }, []);
+
   return (
     <Layout>
       {Array.isArray(events) && events.length > 0 && (
