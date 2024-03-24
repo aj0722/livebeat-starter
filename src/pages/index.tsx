@@ -1,21 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { databases } from "@/lib/appwrite";
+import { getEvents } from "@/lib/events";
+import { LiveBeatEvent } from "@/types/events";
 
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
 import EventCard from "@/components/EventCard";
 
-import events from "@/data/events.json";
+// import events from "@/data/events.json";
 
 function Home() {
+
+  const [events, setEvents] = useState<Array<LiveBeatEvent> | undefined>();
+
   useEffect(() => {
     (async function run() {
-      const results = await databases.listDocuments(
-        import.meta.env.VITE_APPWRITE_EVENTS_DATABASE_ID,
-        import.meta.env.VITE_APPWRITE_EVENTS_COLLECTION_ID,
-      );
-      console.log("results", results);
+      const { events } = await getEvents();
+      setEvents(events);
     })();
   }, []);
 
@@ -44,12 +45,12 @@ function Home() {
                     <a>
                       <EventCard
                         date={event.date}
-                        image={{
+                        /*image={{
                           alt: "",
                           height: event.imageHeight,
                           url: event.imageUrl,
                           width: event.imageWidth,
-                        }}
+                        }}*/
                         location={event.location}
                         name={event.name}
                       />
